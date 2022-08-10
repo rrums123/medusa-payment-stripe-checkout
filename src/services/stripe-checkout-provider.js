@@ -56,12 +56,12 @@ class StripeCheckoutProviderService extends PaymentService {
      * @return {Promise<PaymentSessionData>} Stripe payment intent
      */
     async createPayment(cart) {
-        const {email, region_id, items} = cart
+        const {email, region_id, items, tax_total, shipping_total} = cart
         const {currency_code} = await this.regionService_.withTransaction(this.manager_).retrieve(region_id)
 
         const lineItems = [];
         for (let item of items) {
-            let product = await this.createProduct(item.variant)
+            let product = await this.createProduct(item.variant.title)
 
             let price = await this.stripe_.prices.create({
                 unit_amount: Math.round(item.unit_price),
@@ -71,6 +71,28 @@ class StripeCheckoutProviderService extends PaymentService {
 
             lineItems.push({price: price.id, quantity: item.quantity})
         }
+
+        // add tax
+        let tax = await this.createProduct(`Taxes, Duties & Fees`)
+
+        let taxPrice = await this.stripe_.prices.create({
+            unit_amount: Math.round(tax_total),
+            currency: currency_code,
+            product: tax.id
+        });
+
+        lineItems.push({price: taxPrice.id, quantity: 1})
+
+        // add shipping
+        let shipping = await this.createProduct(`Shipping`)
+
+        let shippingPrice = await this.stripe_.prices.create({
+            unit_amount: Math.round(shipping_total),
+            currency: currency_code,
+            product: shipping.id
+        });
+
+        lineItems.push({price: shippingPrice.id, quantity: 1})
 
         return await this.stripe_.checkout.sessions.create({
             line_items: lineItems,
@@ -156,9 +178,9 @@ class StripeCheckoutProviderService extends PaymentService {
         }
     }
 
-    async createProduct(product_variant) {
+    async createProduct(title) {
         const product = await this.stripe_.products.create({
-            name: product_variant.title,
+            name: title,
         })
 
         return product
