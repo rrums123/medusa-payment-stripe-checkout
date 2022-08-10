@@ -1,4 +1,4 @@
-# medusa-payment-stripe
+# medusa-payment-stripe-checkout
 
 Add Stripe Checkout as a Payment Provider.
 
@@ -6,7 +6,7 @@ Add Stripe Checkout as a Payment Provider.
 
 ```js
 {
-    "api_key": "STRIPE_API_KEY",
-        "site_url": "SITE_URL"
+    "api_key": "STRIPE_API_KEY", 
+    "site_url": "SITE_URL"
 }
 ```
