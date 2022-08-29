@@ -1,6 +1,6 @@
 {
   "name": "medusa-payment-stripe-checkout",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Stripe Payment provider with checkout for MedusaJS",
   "main": "index.js",
   "devDependencies": {
