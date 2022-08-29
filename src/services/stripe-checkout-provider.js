@@ -186,7 +186,7 @@ class StripeCheckoutProviderService extends PaymentService {
     }
 
     getThankYouUrl() {
-        return this.options_.thankYouUrl_ ?? ""
+        return this.options_.thank_you_url ?? ""
     }
 }
 
