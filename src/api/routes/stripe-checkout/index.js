@@ -7,6 +7,7 @@ export default (app) => {
     const action = req.query.action
     const cartId = req.query.ref
     const orderService = req.scope.resolve("orderService")
+    const stripeCheckout = req.scope.resolve("pp_stripe-checkout")
     const manager = req.scope.resolve("manager")
 
     switch (action) {
@@ -43,6 +44,9 @@ export default (app) => {
 
         if (response_code === 200) {
           await orderService.capturePayment(response_body.data.id)
+          if (stripeCheckout.getThankYouUrl() !== "") {
+            return res.redirect(stripeCheckout.getThankYouUrl())
+          }
         }
 
         break

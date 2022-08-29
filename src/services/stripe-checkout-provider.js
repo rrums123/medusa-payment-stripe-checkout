@@ -15,7 +15,7 @@ class StripeCheckoutProviderService extends PaymentService {
          * Required Stripe options:
          *  {
          *    api_key: "stripe_secret_key", REQUIRED
-         *    site_url: "site_url", REQUIRED
+         *    thank_you_url: "thank_you_url", OPTIONAL
          *    // Use this flag to capture payment immediately (default is false)
          *    capture: true
          *  }
@@ -24,6 +24,9 @@ class StripeCheckoutProviderService extends PaymentService {
 
         /** @private @const {Stripe} */
         this.stripe_ = Stripe(options.api_key)
+
+        /** @private @const string */
+        this.thankYouUrl_ = options.thank_you_url
 
         /** @private @const {RegionService} */
         this.regionService_ = regionService
@@ -57,7 +60,7 @@ class StripeCheckoutProviderService extends PaymentService {
      */
     async createPayment(cart) {
         const {email, region_id, items, tax_total, shipping_total} = cart
-        const {currency_code} = await this.regionService_.withTransaction(this.manager_).retrieve(region_id)
+        const {currency_code} = await this.regionService_.retrieve(region_id)
 
         const lineItems = [];
         for (let item of items) {
@@ -184,6 +187,10 @@ class StripeCheckoutProviderService extends PaymentService {
         })
 
         return product
+    }
+
+    getThankYouUrl() {
+        return this.thankYouUrl_ ? this.thankYouUrl_ : ""
     }
 }
 
