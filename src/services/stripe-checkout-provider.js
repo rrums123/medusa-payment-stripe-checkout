@@ -16,17 +16,12 @@ class StripeCheckoutProviderService extends PaymentService {
          *  {
          *    api_key: "stripe_secret_key", REQUIRED
          *    thank_you_url: "thank_you_url", OPTIONAL
-         *    // Use this flag to capture payment immediately (default is false)
-         *    capture: true
          *  }
          */
         this.options_ = options
 
         /** @private @const {Stripe} */
         this.stripe_ = Stripe(options.api_key)
-
-        /** @private @const string */
-        this.thankYouUrl_ = options.thank_you_url
 
         /** @private @const {RegionService} */
         this.regionService_ = regionService
@@ -190,7 +185,7 @@ class StripeCheckoutProviderService extends PaymentService {
     }
 
     getThankYouUrl() {
-        return this.thankYouUrl_ ? this.thankYouUrl_ : ""
+        return this.options_.thankYouUrl_ ?? ""
     }
 }
 
