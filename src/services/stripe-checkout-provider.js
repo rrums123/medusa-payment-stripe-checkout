@@ -15,6 +15,7 @@ class StripeCheckoutProviderService extends PaymentService {
          * Required Stripe options:
          *  {
          *    api_key: "stripe_secret_key", REQUIRED
+         *    backend_url: "backend_url", REQUIRED
          *    thank_you_url: "thank_you_url", OPTIONAL
          *  }
          */
@@ -96,8 +97,8 @@ class StripeCheckoutProviderService extends PaymentService {
             line_items: lineItems,
             customer_email: email,
             mode: "payment",
-            success_url: `${this.options_.site_url}stripe-checkout?action=success&ref=${cart.id}`,
-            cancel_url: `${this.options_.site_url}stripe-checkout?action=cancel&ref=${cart.id}`,
+            success_url: `${this.options_.backend_url}stripe-checkout?action=success&ref=${cart.id}`,
+            cancel_url: `${this.options_.backend_url}stripe-checkout?action=cancel&ref=${cart.id}`,
         })
     }
 
